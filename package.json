@@ -8,7 +8,7 @@
   "description": "",
   "main": "index.mjs",
   "scripts": {
-    "test": "tape __tests__/**/*.js"
+    "test": "node __tests__/parser.mjs && node __tests__/game.mjs"
   },
   "author": "",
   "license": "ISC",

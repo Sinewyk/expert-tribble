@@ -82,6 +82,7 @@ export function parse(input) {
 						matches[1],
 						matches[4],
 						matches[5],
+						0, // treasure
 					];
 					game.adventurers?.push(adventurer);
 				}
