@@ -8,7 +8,7 @@
   "description": "",
   "main": "index.mjs",
   "scripts": {
-    "test": "node __tests__/parser.mjs | tap-dot && node __tests__/game.mjs | tap-dot"
+    "test": "node __tests__/parser.mjs | tap-dot && node __tests__/game.mjs | tap-dot && node __tests__/formatter.mjs | tap-dot"
   },
   "author": "",
   "license": "ISC",

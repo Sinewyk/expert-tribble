@@ -5,12 +5,9 @@ C-3-4
 M-1-0
 M-2-1
 
-# {T comme Trésor}-{Axe horizontal}-{Axe vertical}-{Trésors restants}
+#{T comme Trésor}-{Axe horizontal}-{Axe vertical}-{Trésors restants}
 T-0-3-2
 T-1-3-3
 
-# {A comme Aventurier}-{Nom de l’aventurier}-{Axe horizontal}-{Axe vertical}-{Orientation}-{Parcours}
+#{A comme Aventurier}-{Nom de l’aventurier}-{Axe horizontal}-{Axe vertical}-{Orientation}-{Parcours}
 A-Lara-1-1-S-AADADAGGA
-
-# Sortie aventurier =>
-# {A comme Aventurier}-{Nom de l’aventurier}-{Axe horizontal}-{Axe vertical}-{Orientation}-{Trésors ramassés}
