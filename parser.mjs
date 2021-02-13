@@ -98,18 +98,29 @@ export function parse(input) {
 		throw new Error(`Input file should at least have a valid "C-x-y" entry`);
 	}
 
+	// [1, 2] => '1,2' , quick position check
 	const position_string = R.map((adv) => R.join(",", R.take(2, adv)));
 
 	// Adventurers can't be on another adventurer, or on a mountain
-	const positions = R.concat(
-		position_string(game.adventurers),
-		position_string(game.mountains)
-	);
+	const positions = [
+		...position_string(game.adventurers),
+		...position_string(game.mountains),
+	];
 
 	if (positions.length !== R.uniq(positions).length) {
 		throw new Error(
 			`Input file is invalid, adventurers are on each other or on mountains`
 		);
+	}
+
+	if (
+		!R.all(([x, y]) => x >= 0 && x < game.width && y >= 0 && y < game.height, [
+			...game.adventurers,
+			...game.treasures,
+			...game.mountains,
+		])
+	) {
+		throw new Error(`Entities are not inside the map constraints`);
 	}
 
 	return game;

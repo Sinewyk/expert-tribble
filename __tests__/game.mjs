@@ -47,6 +47,8 @@ test("tick adventurers, precise, no mountains or treasure", (t) => {
 	const fake_game = {
 		width: 4,
 		height: 4,
+		adventurers: [],
+		mountains: [],
 	};
 
 	const testing = [
@@ -128,4 +130,34 @@ test("tick adventurers, precise, no mountains or treasure", (t) => {
 	testing.forEach((test_case) => {
 		t.deepEqual(tick_adventurer(test_case[0], fake_game), test_case[1]);
 	});
+});
+
+test("tick 2 adventurers, they can't finish on same position", (t) => {
+	t.plan(2);
+
+	const game = parse(`C-4-4
+A-A1-0-0-E-A
+A-A2-2-0-O-A
+A-A3-3-0-S-A
+A-A4-3-2-N-A
+`);
+	const [ended, next_game] = tick(game);
+
+	t.deepEqual(
+		next_game,
+		{
+			width: 4,
+			height: 4,
+			mountains: [],
+			treasures: [],
+			adventurers: [
+				[1, 0, "A1", "E", "", 0], // priority
+				[2, 0, "A2", "O", "", 0],
+				[3, 1, "A3", "S", "", 0], // priority
+				[3, 2, "A4", "N", "", 0],
+			],
+		},
+		"next game state is equal to previous"
+	);
+	t.true(ended, "game is ended");
 });

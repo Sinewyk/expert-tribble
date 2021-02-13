@@ -1,3 +1,5 @@
+import * as R from "ramda";
+
 // Difficult to live without Algebraic Data Types anymore (Option/Result) and such ...
 // So let's do a pseudo ADT Result right there
 // Function will still throw ... but encapsulate the end via [bool, next_game_state]
@@ -5,10 +7,19 @@
 export function tick(game) {
 	const next_game = {
 		...game,
-		adventurers: game.adventurers.map((adventurer) =>
-			tick_adventurer(adventurer, game)
-		),
+		// I'm going to have to mutate it in place
+		// so make a copy of it to not have surprises
+		adventurers: [...game.adventurers],
+		// I also anticipate mutating the treasures, so ...
+		treasures: [...game.treasures],
 	};
+
+	next_game.adventurers.forEach((adventurer, index, arr) => {
+		const adventurer2 = tick_adventurer(adventurer, next_game);
+		// mutate in place
+		// each next iteration will already see results of the previous
+		arr[index] = adventurer2;
+	});
 
 	return [game_has_ended(next_game), next_game];
 }
@@ -45,21 +56,45 @@ export function tick_adventurer(adventurer, game) {
 
 	const next_instruction = instructions_as_array.shift();
 
+	const pos_array = R.map(R.pipe(R.take(2), R.join(",")), [
+		...game.adventurers,
+		...game.mountains,
+	]);
+
+	const is_obstructed = (next_pos) => R.indexOf(next_pos, pos_array) !== -1;
+
+	let temp;
+
 	switch (next_instruction) {
 		case "A":
-			// @TODO: mountains
 			switch (direction) {
 				case "N":
-					y2 = Math.max(0, y - 1);
+					temp = Math.max(0, y - 1);
+					if (is_obstructed(`${x},${temp}`)) {
+						break;
+					}
+					y2 = temp;
 					break;
 				case "S":
-					y2 = Math.min(game.height - 1, y + 1);
+					temp = Math.min(game.height - 1, y + 1);
+					if (is_obstructed(`${x},${temp}`)) {
+						break;
+					}
+					y2 = temp;
 					break;
 				case "E":
-					x2 = Math.min(game.width - 1, x + 1);
+					temp = Math.min(game.width - 1, x + 1);
+					if (is_obstructed(`${temp},${y}`)) {
+						break;
+					}
+					x2 = temp;
 					break;
 				case "O":
-					x2 = Math.max(0, x - 1);
+					temp = Math.max(0, x - 1);
+					if (is_obstructed(`${temp},${y}`)) {
+						break;
+					}
+					x2 = temp;
 					break;
 				default:
 					throw new Error("unreachable");

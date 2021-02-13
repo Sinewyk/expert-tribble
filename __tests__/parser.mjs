@@ -67,6 +67,17 @@ A-Lara-1-0-S-AADADAGGA
 	});
 });
 
+test("throw on invalid input, adventurers outside map", (t) => {
+	t.plan(1);
+
+	t.throws(() => {
+		parse(`
+C-1-1
+A-Lara-1-1-S-A
+`);
+	}, "entity outside map constraints");
+});
+
 // It's not invalid, it's just stupid, nothing happens ^^
 test("parse an incomplete input", (t) => {
 	t.plan(1);
