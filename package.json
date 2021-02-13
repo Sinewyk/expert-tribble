@@ -8,11 +8,15 @@
   "description": "",
   "main": "index.mjs",
   "scripts": {
-    "test": "node __tests__/parser.mjs && node __tests__/game.mjs"
+    "test": "node __tests__/parser.mjs | tap-dot && node __tests__/game.mjs | tap-dot"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "tap-dot": "^2.0.0",
     "tape": "^5.1.1"
+  },
+  "dependencies": {
+    "ramda": "^0.27.1"
   }
 }

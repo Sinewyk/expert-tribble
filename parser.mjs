@@ -1,4 +1,5 @@
 import assert from "assert";
+import * as R from "ramda";
 
 export function parse(input) {
 	// I'm not using typescript, but i'm still using these assert to both fail fast and hard
@@ -95,6 +96,20 @@ export function parse(input) {
 
 	if (!game.width || !game.height) {
 		throw new Error(`Input file should at least have a valid "C-x-y" entry`);
+	}
+
+	const position_string = R.map((adv) => R.join(",", R.take(2, adv)));
+
+	// Adventurers can't be on another adventurer, or on a mountain
+	const positions = R.concat(
+		position_string(game.adventurers),
+		position_string(game.mountains)
+	);
+
+	if (positions.length !== R.uniq(positions).length) {
+		throw new Error(
+			`Input file is invalid, adventurers are on each other or on mountains`
+		);
 	}
 
 	return game;

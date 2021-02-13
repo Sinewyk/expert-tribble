@@ -3,11 +3,6 @@ import test from "tape";
 import { parse } from "../parser.mjs";
 import { tick, run_game, tick_adventurer } from "../game.mjs";
 
-const fake_game = {
-	width: 4,
-	height: 4,
-};
-
 test("tick a simple game", (t) => {
 	t.plan(2);
 
@@ -28,49 +23,11 @@ test("tick a simple game", (t) => {
 	t.true(ended, "game is ended");
 });
 
-test("tick with adventurers", (t) => {
-	t.plan(2);
-
-	const game = parse(`C-3-4
-A-A1-0-0-S-A
-A-A2-0-0-N-A
-A-A3-0-0-E-A
-A-A4-0-0-O-A
-A-A5-0-0-S-D
-A-A6-0-0-N-G`);
-	const [ended, next_game] = tick(game);
-
-	t.deepEqual(
-		next_game,
-		{
-			width: 3,
-			height: 4,
-			mountains: [],
-			treasures: [],
-			adventurers: [
-				[0, 1, "A1", "S", "", 0],
-				[0, 0, "A2", "N", "", 0],
-				[1, 0, "A3", "E", "", 0],
-				[0, 0, "A4", "O", "", 0],
-				[0, 0, "A5", "O", "", 0],
-				[0, 0, "A6", "O", "", 0],
-			],
-		},
-		"adventurers move around"
-	);
-	t.true(ended, "game is ended");
-});
-
-test("tick with adventurers", (t) => {
+test("run_game, multiple instructions", (t) => {
 	t.plan(1);
 
 	const game = parse(`C-3-4
-A-A1-0-0-S-AG
-A-A2-0-0-N-AD
-A-A3-0-0-E-AG
-A-A4-0-0-O-AD
-A-A5-0-0-S-GA
-A-A6-0-0-N-DA`);
+A-A1-0-0-S-AG`);
 	const end_game = run_game(game);
 
 	t.deepEqual(
@@ -80,20 +37,18 @@ A-A6-0-0-N-DA`);
 			height: 4,
 			mountains: [],
 			treasures: [],
-			adventurers: [
-				[0, 1, "A1", "E", "", 0],
-				[0, 0, "A2", "E", "", 0],
-				[1, 0, "A3", "N", "", 0],
-				[0, 0, "A4", "N", "", 0],
-				[1, 0, "A5", "E", "", 0],
-				[1, 0, "A6", "E", "", 0],
-			],
+			adventurers: [[0, 1, "A1", "E", "", 0]],
 		},
 		"adventurers move around"
 	);
 });
 
-test("tick adventurers", (t) => {
+test("tick adventurers, precise, no mountains or treasure", (t) => {
+	const fake_game = {
+		width: 4,
+		height: 4,
+	};
+
 	const testing = [
 		// boundaries
 		[
