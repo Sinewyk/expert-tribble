@@ -10,8 +10,7 @@ export function parse(input) {
 	input.split("\n").forEach((line, line_nb) => {
 		switch (line[0]) {
 			case "C":
-				// Switch does not create a scope in js
-				// manually create it
+				// Scope by cases, not only new scope in the switch
 				{
 					const regex = /^C-(\d+)-(\d+)/g;
 					const matches = regex.exec(line);

@@ -3,16 +3,12 @@
 // Function will still throw ... but encapsulate the end via [bool, next_game_state]
 // I'll probably rework this later ... first make it work, then make it better
 export function tick(game) {
-	// Game is ended when there are no adventurers that need to move
-	if (game_has_ended(game)) {
-		return [true, game];
-	}
-
-	const next_game = { ...game };
-
-	next_game.adventurers = next_game.adventurers.map((adventurer) =>
-		tick_adventurer(adventurer, next_game)
-	);
+	const next_game = {
+		...game,
+		adventurers: game.adventurers.map((adventurer) =>
+			tick_adventurer(adventurer, game)
+		),
+	};
 
 	return [game_has_ended(next_game), next_game];
 }
@@ -49,10 +45,9 @@ export function tick_adventurer(adventurer, game) {
 
 	const next_instruction = instructions_as_array.shift();
 
-	// @TODO consider mountains and treasure
-
 	switch (next_instruction) {
 		case "A":
+			// @TODO: mountains
 			switch (direction) {
 				case "N":
 					y2 = Math.max(0, y - 1);
@@ -109,6 +104,8 @@ export function tick_adventurer(adventurer, game) {
 		default:
 			throw new Error("unreachable");
 	}
+
+	// @TODO: treasures
 
 	return [x2, y2, name, direction2, instructions_as_array.join(""), treasures2];
 }
