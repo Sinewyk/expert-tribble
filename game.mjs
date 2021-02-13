@@ -140,7 +140,16 @@ export function tick_adventurer(adventurer, game) {
 			throw new Error("unreachable");
 	}
 
-	// @TODO: treasures
+	// pick up treasures only when moving
+	if (next_instruction === "A") {
+		let found = R.find(([x, y]) => x === x2 && y === y2, game.treasures);
+		if (found) {
+			found[2]--;
+			treasures2++;
+
+			game.treasures = game.treasures.filter(([_, __, nb]) => nb !== 0);
+		}
+	}
 
 	return [x2, y2, name, direction2, instructions_as_array.join(""), treasures2];
 }

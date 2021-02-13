@@ -18,7 +18,7 @@ test("tick a simple game", (t) => {
 			treasures: [],
 			adventurers: [],
 		},
-		"next game state is equal to previous"
+		"next game state is equal to previous if nothing to do"
 	);
 	t.true(ended, "game is ended");
 });
@@ -39,7 +39,7 @@ A-A1-0-0-S-AG`);
 			treasures: [],
 			adventurers: [[0, 1, "A1", "E", "", 0]],
 		},
-		"adventurers move around"
+		"run_game spend all instructions"
 	);
 });
 
@@ -49,6 +49,7 @@ test("tick adventurers, precise, no mountains or treasure", (t) => {
 		height: 4,
 		adventurers: [],
 		mountains: [],
+		treasures: [],
 	};
 
 	const testing = [
@@ -127,8 +128,12 @@ test("tick adventurers, precise, no mountains or treasure", (t) => {
 
 	t.plan(testing.length);
 
-	testing.forEach((test_case) => {
-		t.deepEqual(tick_adventurer(test_case[0], fake_game), test_case[1]);
+	testing.forEach((test_case, index) => {
+		t.deepEqual(
+			tick_adventurer(test_case[0], fake_game),
+			test_case[1],
+			`precise testing #${index}`
+		);
 	});
 });
 
@@ -157,7 +162,29 @@ A-A4-3-2-N-A
 				[3, 2, "A4", "N", "", 0],
 			],
 		},
-		"next game state is equal to previous"
+		"2 players did not move"
 	);
 	t.true(ended, "game is ended");
+});
+
+test("you have to exit a position and come back to pick up treasure again", (t) => {
+	t.plan(1);
+
+	const game = parse(`C-4-4
+A-A1-0-0-E-AG
+T-1-0-2
+`);
+	const end_game = run_game(game);
+
+	t.deepEqual(
+		end_game,
+		{
+			width: 4,
+			height: 4,
+			mountains: [],
+			treasures: [[1, 0, 1]],
+			adventurers: [[1, 0, "A1", "N", "", 1]],
+		},
+		"there's one treasure left"
+	);
 });
