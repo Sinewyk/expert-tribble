@@ -32,6 +32,26 @@ export function run_game(game) {
 	return run_game(next_game);
 }
 
+// Use continuation passing to not have the chance to blow up the stack \o/
+export function run_game_smart(game) {
+	function exec(res) {
+		const [ended, game] = res;
+		if (ended) {
+			return game;
+		} else {
+			return () => exec(tick(game));
+		}
+	}
+
+	var next = exec([false, game]);
+
+	while (typeof next === "function") {
+		next = next();
+	}
+
+	return next;
+}
+
 export function game_has_ended(game) {
 	if (game.adventurers?.some(adventurer_still_has_instructions)) {
 		return false;
