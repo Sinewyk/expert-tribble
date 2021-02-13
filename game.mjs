@@ -3,7 +3,6 @@ import * as R from "ramda";
 // Difficult to live without Algebraic Data Types anymore (Option/Result) and such ...
 // So let's do a pseudo ADT Result right there
 // Function will still throw ... but encapsulate the end via [bool, next_game_state]
-// I'll probably rework this later ... first make it work, then make it better
 export function tick(game) {
 	const next_game = {
 		...game,
@@ -54,8 +53,10 @@ export function tick_adventurer(adventurer, game) {
 		direction2 = direction,
 		treasures2 = treasures;
 
+	// "consume" one instruction
 	const next_instruction = instructions_as_array.shift();
 
+	// obstructions array, as my pseudo type 'x,y'
 	const pos_array = R.map(R.pipe(R.take(2), R.join(",")), [
 		...game.adventurers,
 		...game.mountains,
